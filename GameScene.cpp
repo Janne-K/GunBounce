@@ -90,9 +90,20 @@ namespace gunbounce {
 
         player = std::make_shared<PlayerGun>(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, this);
         
+        /*
         mouseListener = cocos2d::EventListenerMouse::create();
-        mouseListener->onMouseDown = CC_CALLBACK_1(GunBounce::onMouseDown, this);
-        _eventDispatcher->addEventListenerWithFixedPriority(this->mouseListener, 1);
+        mouseListener->onMouseDown = [this](cocos2d::Event* event) {
+            this->player->tryToShoot();
+            return true;
+        };
+        _eventDispatcher->addEventListenerWithFixedPriority(this->mouseListener, 1);*/
+        
+        touchListener = cocos2d::EventListenerTouchOneByOne::create();
+        touchListener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event){
+            this->player->tryToShoot();
+            return true;
+        };
+        _eventDispatcher->addEventListenerWithFixedPriority(this->touchListener, 1);
         return true;
     }
 
@@ -113,9 +124,4 @@ namespace gunbounce {
 
 
     }
-    
-    void GunBounce::onMouseDown(cocos2d::Ref* pSender) {
-        player->tryToShoot();
-    }
-
 }

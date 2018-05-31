@@ -20,7 +20,7 @@ namespace gunbounce {
     private:
         std::shared_ptr<PlayerGun> player;
         cocos2d::EventListenerMouse* mouseListener;
-        void onMouseDown(cocos2d::Ref* pSender);
+        cocos2d::EventListenerTouchOneByOne* touchListener;
     };
 }
 #endif // __GAME_SCENE_H__
