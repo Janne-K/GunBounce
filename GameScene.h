@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "PlayerGun.h"
+#include "ShotProjectile.h"
 
 namespace gunbounce {
     class GunBounce : public cocos2d::Scene
@@ -17,8 +18,11 @@ namespace gunbounce {
         
         // implement the "static create()" method manually
         CREATE_FUNC(GunBounce);
+        
+        void addShotToList(std::shared_ptr<ShotProjectile> shotToAdd);
     private:
         std::shared_ptr<PlayerGun> player;
+        std::vector<std::shared_ptr<ShotProjectile>> shots;
         cocos2d::EventListenerMouse* mouseListener;
         cocos2d::EventListenerTouchOneByOne* touchListener;
     };

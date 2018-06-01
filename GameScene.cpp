@@ -90,14 +90,12 @@ namespace gunbounce {
 
         player = std::make_shared<PlayerGun>(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, this);
         
-        /*
-        mouseListener = cocos2d::EventListenerMouse::create();
-        mouseListener->onMouseDown = [this](cocos2d::Event* event) {
-            this->player->tryToShoot();
-            return true;
-        };
-        _eventDispatcher->addEventListenerWithFixedPriority(this->mouseListener, 1);*/
-        
+        auto edge = cocos2d::PhysicsBody::createEdgeBox(visibleSize, cocos2d::PhysicsMaterial(1.0f, 1.0f, 0.0f));
+        auto edgeNode = cocos2d::Node::create();
+        edgeNode->setPosition(cocos2d::Vec2(visibleSize.width/2, visibleSize.height/2));
+        edgeNode->setPhysicsBody(edge);
+        this->addChild(edgeNode);
+
         touchListener = cocos2d::EventListenerTouchOneByOne::create();
         touchListener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event){
             this->player->tryToShoot();
@@ -123,5 +121,9 @@ namespace gunbounce {
         //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
+    }
+    
+    void GunBounce::addShotToList(std::shared_ptr<ShotProjectile> shotToAdd) {
+        shots.push_back(shotToAdd);
     }
 }

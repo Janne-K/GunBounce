@@ -6,13 +6,16 @@
 namespace gunbounce {
     class PlayerGun {
     public:
-        PlayerGun(const double x, const double y, cocos2d::Scene* parentScene);
-        void update();
+        PlayerGun(const float x, const float y, cocos2d::Scene* scene);
         void tryToShoot();
     private:
-        //cocos2d::Vec2 position;
+        cocos2d::Scene * const parentScene; // We need this to add shots to the scene
         cocos2d::Sprite* gunSprite;
-        //cocos2d::PhysicsBody* gunPhysBody;
+        const float PHYSRADIUS;
+        const float PHYSMASS;
+        const float PHYSSHOOTFORCE;
+        const float ROTATIONRATE;
+        void shoot();
     };
 }
 
