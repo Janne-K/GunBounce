@@ -8,6 +8,16 @@ namespace gunbounce {
     const cocos2d::Size SMALL_RESOLUTION_SIZE = cocos2d::Size(960, 540);
     const cocos2d::Size MEDIUM_RESOLUTION_SIZE = cocos2d::Size(1920, 1080);
     const cocos2d::Size LARGE_RESOLUTION_SIZE = cocos2d::Size(3840, 2160);
+
+    const float PLAYERPHYSRADIUS = 60.0f;
+    const float PLAYERPHYSMASS = 0.1f;
+    const float PLAYERPHYSSHOOTFORCE = 5000.0f;
+    const float PLAYERROTATIONRATE = 360.0f;
+    const float PLAYERVELOCITYLIMIT = 1200.0f;
+    const float SHOTLIFETIME = 3.0f;
+
+    const int COLL_PLAYER = 0x01;
+    const int COLL_SHOT = 0x02;
     
     cocos2d::Vec2 calculateNormalVecFromAngle(const float angle) {
         float radAngle = angle / 180.0f * M_PI;

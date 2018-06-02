@@ -88,8 +88,27 @@ namespace gunbounce {
             this->addChild(label, 1);
         }
 
-        player = std::make_shared<PlayerGun>(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, this);
+        this->createPlayer();
         
+        auto shotHitListener = cocos2d::EventListenerPhysicsContact::create();
+        shotHitListener->onContactBegin = [this](cocos2d::PhysicsContact &contact) {
+            if (this->player == nullptr)
+                return true;
+                
+            auto emitter = cocos2d::ParticleSun::create();
+            emitter->setDuration(1.0f);
+            emitter->setPosition(this->player->getSprite()->getPosition());
+            emitter->setEmitterMode(cocos2d::ParticleSystem::Mode::RADIUS);
+            emitter->setStartRadius(0.0f);
+            emitter->setEndRadius(300.0f);
+            this->addChild(emitter, 100);
+            
+            this->player->getSprite()->removeFromParentAndCleanup(true);
+            player = nullptr;
+            return true;
+        };
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(shotHitListener, this);
+
         auto edge = cocos2d::PhysicsBody::createEdgeBox(visibleSize, cocos2d::PhysicsMaterial(1.0f, 1.0f, 0.0f));
         auto edgeNode = cocos2d::Node::create();
         edgeNode->setPosition(cocos2d::Vec2(visibleSize.width/2, visibleSize.height/2));
@@ -98,11 +117,44 @@ namespace gunbounce {
 
         touchListener = cocos2d::EventListenerTouchOneByOne::create();
         touchListener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event){
-            this->player->tryToShoot();
+            if (this->player == nullptr)
+                this->createPlayer();
+            else if (this->player->canShoot())
+                this->playerShoot();
             return true;
         };
         _eventDispatcher->addEventListenerWithFixedPriority(this->touchListener, 1);
+        
+        this->scheduleUpdate();
+        
+        cocos2d::log("New scene initiated");
+        
         return true;
+    }
+    
+    void GunBounce::update(float dt) {
+        auto isDead = [](std::shared_ptr<ShotProjectile> shot) {
+            return shot->getLifeTime() < 0.0f;
+        };
+        
+        for (auto shot : shots) {
+            shot->decreaseLifeTime(dt);
+            if (isDead(shot)) {
+
+                auto sprite = shot->getSprite();
+                
+                auto position = sprite->getPosition();
+                auto emitter = cocos2d::ParticleSun::create();
+                emitter->setDuration(0.1f);
+                emitter->setPosition(position);
+                this->addChild(emitter, 100);
+                
+                sprite->removeFromParentAndCleanup(true);
+                
+            }
+        }
+        
+        shots.erase(std::remove_if(shots.begin(), shots.end(), isDead), shots.end());
     }
 
 
@@ -125,5 +177,29 @@ namespace gunbounce {
     
     void GunBounce::addShotToList(std::shared_ptr<ShotProjectile> shotToAdd) {
         shots.push_back(shotToAdd);
+    }
+    
+    void GunBounce::playerShoot() {
+        auto position = player->getSprite()->getPosition();
+        auto angle = player->getSprite()->getRotation();
+        
+        // cocos2d uses positive angle for clockwise rotation instead of counter-clockwise, so invert the angle
+        auto offsetVec = calculateNormalVecFromAngle(-angle) * (PLAYERPHYSRADIUS + 50.0f);
+        position += offsetVec;
+
+        //auto scene = this->gunSprite->getScene();
+        auto newShot = std::make_shared<ShotProjectile>(position.x, position.y, angle, PLAYERPHYSMASS, PLAYERPHYSSHOOTFORCE, SHOTLIFETIME, this);
+        shots.push_back(newShot);
+
+        auto gunPhysBody = player->getSprite()->getPhysicsBody();
+        gunPhysBody->applyForce(cocos2d::Vec2(-PLAYERPHYSSHOOTFORCE, 0.0f));
+        cocos2d::log("angle: %f", angle);
+    }
+    
+    void GunBounce::createPlayer() {
+        auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+        cocos2d::Vec2 origin = cocos2d::Director::getInstance()->getVisibleOrigin();
+        player = std::make_shared<PlayerGun>(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y,
+                                             PLAYERPHYSMASS, PLAYERPHYSRADIUS, PLAYERROTATIONRATE, this);
     }
 }
