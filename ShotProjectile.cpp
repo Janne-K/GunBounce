@@ -3,11 +3,12 @@
 
 namespace gunbounce {
     ShotProjectile::ShotProjectile(const float x, const float y, const float angle, const float mass, const float force, const float ltime, cocos2d::Scene* const parentScene)
-            : PHYSMASS(mass), PHYSRADIUS(30.0f), lifetime(ltime) {
+            : PHYSMASS(mass), PHYSRADIUS(SHOTPHYSRADIUS), lifetime(ltime) {
         this->shotSprite = cocos2d::Sprite::create("shotprojectile.png");
         parentScene->addChild(this->shotSprite, 0);
         this->shotSprite->setPosition(x, y);
         this->shotSprite->setRotation(angle);
+        this->shotSprite->setTag(COLL_SHOT);
         
         auto shotPhysBody = cocos2d::PhysicsBody::createCircle(PHYSRADIUS,
                                 cocos2d::PhysicsMaterial(1.0f, 1.0f, 0.0f));

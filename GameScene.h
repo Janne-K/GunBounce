@@ -25,11 +25,26 @@ namespace gunbounce {
         void addShotToList(std::shared_ptr<ShotProjectile> shotToAdd);
     private:
         std::shared_ptr<PlayerGun> player;
-        std::vector<std::shared_ptr<ShotProjectile>> shots;
+        std::shared_ptr<CollectibleStar> star;
+        std::queue<std::shared_ptr<ShotProjectile>> shots;
         cocos2d::EventListenerMouse* mouseListener;
         cocos2d::EventListenerTouchOneByOne* touchListener;
+        cocos2d::Label* scoreLabel;
+        cocos2d::Label* levelLabel;
+        void stageSetup();
+        void updateLabels();
+        void handlePlayerDeath();
+        void handleCollectStar();
+        void randomizeStarPosition();
         void playerShoot();
+        void checkMaxShots();
+        void eraseOldestShot();
         void createPlayer();
+        void createStar();
+        int score;
+        int level;
+        int maxShotsOnScreen;
+        float maxShotsIncreaseTimer;
     };
 }
 #endif // __GAME_SCENE_H__

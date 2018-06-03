@@ -8,12 +8,13 @@ namespace gunbounce {
         this->gunSprite = cocos2d::Sprite::create("playergun.png");
         scene->addChild(this->gunSprite, 0);
         this->gunSprite->setPosition(x, y);
+        this->gunSprite->setTag(COLL_PLAYER);
         
         auto gunPhysBody = cocos2d::PhysicsBody::createCircle(PHYSRADIUS,
                                 cocos2d::PhysicsMaterial(1.0f, 1.0f, 0.0f));
         gunPhysBody->setMass(PHYSMASS);
         gunPhysBody->setCategoryBitmask(COLL_PLAYER);
-        gunPhysBody->setCollisionBitmask(COLL_SHOT);
+        gunPhysBody->setCollisionBitmask(COLL_SHOT | COLL_STAR);
         gunPhysBody->setContactTestBitmask(0xFFFFFFFF);
         gunPhysBody->setVelocityLimit(PLAYERVELOCITYLIMIT);
         
