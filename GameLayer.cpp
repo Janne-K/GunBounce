@@ -1,7 +1,7 @@
 #include <memory>
 #include "GameLayer.h"
 #include "MenuLayer.h"
-//#include "SimpleAudioEngine.h"
+#include "SimpleAudioEngine.h"
 
 namespace gunbounce {
 /*
@@ -29,43 +29,16 @@ namespace gunbounce {
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
         auto origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 
-        /////////////////////////////
-        // 2. add a menu item with "X" image, which is clicked to quit the program
-        //    you may modify it.
-
-        // add a "close" icon to exit the progress. it's an autorelease object
-
-
-        /////////////////////////////
-        // 3. add your codes below...
-
-        // add a label shows "Hello World"
-        // create and initialize a label
-/*
-        auto label = cocos2d::Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-        if (label == nullptr)
-        {
-            problemLoading("'fonts/Marker Felt.ttf'");
-        }
-        else
-        {
-            // position the label on the center of the screen
-            label->setPosition(cocos2d::Vec2(origin.x + visibleSize.width/2,
-                                    origin.y + visibleSize.height - label->getContentSize().height));
-
-            // add the label as a child to this layer
-            this->addChild(label, 1);
-        }
-*/
-        auto edge = cocos2d::PhysicsBody::createEdgeBox(visibleSize, cocos2d::PhysicsMaterial(1.0f, 1.0f, 0.0f));
         auto edgeNode = cocos2d::Node::create();
+        edgeNode->setTag(COLL_LEVEL);
         edgeNode->setPosition(cocos2d::Vec2(visibleSize.width/2, visibleSize.height/2));
+        auto edge = cocos2d::PhysicsBody::createEdgeBox(visibleSize, cocos2d::PhysicsMaterial(1.0f, 1.0f, 0.0f));
+        edge->setContactTestBitmask(0xFFFFFFFF);
         edgeNode->setPhysicsBody(edge);
         this->addChild(edgeNode);
 
         levelLabel = cocos2d::Label::createWithTTF("Level: 1", "fonts/Marker Felt.ttf", 48);
         scoreLabel = cocos2d::Label::createWithTTF("Score: 0", "fonts/Marker Felt.ttf", 48);
-        
         if (levelLabel == nullptr || scoreLabel == nullptr)
         {
             problemLoading("'fonts/Marker Felt.ttf'");
@@ -81,29 +54,33 @@ namespace gunbounce {
             this->addChild(levelLabel, 1);
         }
 
-        this->createStar();
-        
         this->stageSetup();
 
-        auto shotHitListener = cocos2d::EventListenerPhysicsContact::create();
-        shotHitListener->onContactBegin = [this](cocos2d::PhysicsContact &contact) {
-            if (this->player == nullptr)
-                return true;
+        // Physics listener for player getting hit
+        auto physicsListener = cocos2d::EventListenerPhysicsContact::create();
+        physicsListener->onContactBegin = [this](cocos2d::PhysicsContact &contact) {
+
+            //if (this->player == nullptr)
+                //return true;
 
             auto nodeA = contact.getShapeA()->getBody()->getNode();
             auto nodeB = contact.getShapeB()->getBody()->getNode();
             if (nodeA && nodeB) {
-                if (nodeA->getTag() == COLL_SHOT  || nodeB->getTag() == COLL_SHOT)
+                if (nodeA->getTag() == COLL_LEVEL || nodeB->getTag() == COLL_LEVEL || (nodeA->getTag() == COLL_SHOT && nodeB->getTag() == COLL_SHOT)) {
+                    auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+                    audio->playEffect("bounce.ogg", false, 1.0f, 1.0f, 1.0f);
+                }
+                else if ((nodeA->getTag() == COLL_SHOT && nodeB->getTag() == COLL_PLAYER) || (nodeA->getTag() == COLL_PLAYER && nodeB->getTag() == COLL_SHOT))
                     this->handlePlayerDeath();
-                else if (nodeA->getTag() == COLL_STAR || nodeB->getTag() == COLL_STAR)
+                else if ((nodeA->getTag() == COLL_STAR && nodeB->getTag() == COLL_PLAYER) || (nodeA->getTag() == COLL_PLAYER && nodeB->getTag() == COLL_STAR))
                     this->handleCollectStar();
             }
 
             return true;
         };
-        _eventDispatcher->addEventListenerWithSceneGraphPriority(shotHitListener, this);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(physicsListener, this);
         
-        // android back press event
+        // Back button press listener
         auto backButtonListener = cocos2d::EventListenerKeyboard::create();
         backButtonListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
         {
@@ -112,6 +89,7 @@ namespace gunbounce {
         };
         _eventDispatcher->addEventListenerWithSceneGraphPriority(backButtonListener, this);
 
+        // Player shoot input listener
         auto touchListener = cocos2d::EventListenerTouchOneByOne::create();
         touchListener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event){
             if (this->player == nullptr)
@@ -121,44 +99,8 @@ namespace gunbounce {
             return true;
         };
         _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-        
-        
-        this->scheduleUpdate();
 
         return true;
-    }
-    
-    void GunBounceLayer::update(float dt) {
-            return;
-        /*
-        this->maxShotsIncreaseTimer += dt;
-        while (this->maxShotsIncreaseTimer >= INCREASE_MAX_SHOTS_INTERVAL) {
-            this->maxShotsIncreaseTimer -= INCREASE_MAX_SHOTS_INTERVAL;
-            this->maxShotsOnScreen++;
-        }*/
-        /*
-        auto isDead = [](std::shared_ptr<ShotProjectile> shot) {
-            return shot->getLifeTime() < 0.0f;
-        };
-        
-        for (auto shot : shots) {
-            shot->decreaseLifeTime(dt);
-            if (isDead(shot)) {
-
-                auto sprite = shot->getSprite();
-                
-                auto position = sprite->getPosition();
-                auto emitter = cocos2d::ParticleSun::create();
-                emitter->setDuration(0.1f);
-                emitter->setPosition(position);
-                this->addChild(emitter, 100);
-                
-                sprite->removeFromParentAndCleanup(true);
-                
-            }
-        }
-        
-        shots.erase(std::remove_if(shots.begin(), shots.end(), isDead), shots.end());*/
     }
 
     void GunBounceLayer::addShotToList(std::shared_ptr<ShotProjectile> shotToAdd) {
@@ -166,6 +108,9 @@ namespace gunbounce {
     }
     
     void GunBounceLayer::stageSetup() {
+        if (this->star == nullptr)
+            this->createStar();
+
         this->score = 0;
         this->level = 1;
         this->updateLabels();
@@ -175,7 +120,9 @@ namespace gunbounce {
         this->maxShotsOnScreen = START_MAX_SHOTS;
         this->maxShotsIncreaseTimer = 0.0f;
         
-        this->createPlayer();
+        if (this->player == nullptr)
+            this->createPlayer();
+        
         this->randomizeStarPosition();
     }
     
@@ -191,11 +138,9 @@ namespace gunbounce {
     }
     
     void GunBounceLayer::spawnPauseMenu() {
-        //_actionManager->pauseTarget(this);
-        //this->pauseRecursiveAllChildren();
-        //this->pauseSchedulerAndActions();
-        //this->player->getSprite()->pauseSchedulerAndActions();
         this->pauseNodes();
+        auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+        audio->pauseBackgroundMusic();
         
         auto scene = cocos2d::Director::getInstance()->getRunningScene();
         auto menuLayer = MenuLayer::create();
@@ -211,16 +156,10 @@ namespace gunbounce {
         this->getScene()->getPhysicsWorld()->setSpeed(0.0f);
     }
 
-    void GunBounceLayer::resumeNodes() {
-        this->resume();
-        for(const auto &child : this->getChildren())
-        {
-            child->resume();
-        }
-        this->getScene()->getPhysicsWorld()->setSpeed(1.0f);
-    }
-
     void GunBounceLayer::handlePlayerDeath() {
+        auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+        audio->playEffect("explosion.ogg", false, 1.0f, 1.0f, 1.0f);
+        
         auto emitter = cocos2d::ParticleSun::create();
         emitter->setDuration(1.0f);
         emitter->setPosition(this->player->getSprite()->getPosition());
@@ -234,6 +173,9 @@ namespace gunbounce {
     }
     
     void GunBounceLayer::handleCollectStar() {
+        auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+        audio->playEffect("collect.ogg", false, 1.0f, 1.0f, 1.0f);
+        
         auto emitter = cocos2d::ParticleFlower::create();
         emitter->setDuration(0.3f);
         emitter->setPosition(this->star->getSprite()->getPosition());
@@ -245,6 +187,8 @@ namespace gunbounce {
         this->score += 100;
         if (this->score % LEVEL_SCORE_THRESHOLD == 0)
         {
+            audio->playEffect("levelup.ogg", false, 1.0f, 1.0f, 1.0f);
+            
             this->level++;
             this->maxShotsOnScreen = START_MAX_SHOTS + this->level - 1;
 
@@ -278,13 +222,16 @@ namespace gunbounce {
     }
     
     void GunBounceLayer::playerShoot() {
+        auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+        audio->playEffect("shoot.ogg", false, 1.0f, 1.0f, 1.0f);
+        
         auto position = player->getSprite()->getPosition();
         auto angle = player->getSprite()->getRotation();
         
         // cocos2d uses positive angle for clockwise rotation instead of counter-clockwise, so invert the angle
         auto offsetVec = calculateNormalVecFromAngle(-angle) * (PLAYERPHYSRADIUS + SHOTPHYSRADIUS + 30.0f);
         auto shotPosition = position + offsetVec;
-        auto newShot = std::make_shared<ShotProjectile>(shotPosition.x, shotPosition.y, angle, PLAYERPHYSMASS, PLAYERPHYSSHOOTFORCE, SHOTLIFETIME, this);
+        auto newShot = std::make_shared<ShotProjectile>(shotPosition.x, shotPosition.y, angle, PLAYERPHYSSHOOTFORCE, this);
         shots.push(newShot);
 
         auto particlePosition = position + (offsetVec * 0.75f);
@@ -295,11 +242,9 @@ namespace gunbounce {
         emitter->setStartRadius(0.0f);
         emitter->setEndRadius(75.0f);
         this->addChild(emitter, 0);
-        
 
         auto gunPhysBody = player->getSprite()->getPhysicsBody();
         gunPhysBody->applyForce(cocos2d::Vec2(-PLAYERPHYSSHOOTFORCE, 0.0f));
-        
         this->checkMaxShots();
     }
     
@@ -325,8 +270,7 @@ namespace gunbounce {
     void GunBounceLayer::createPlayer() {
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
         cocos2d::Vec2 origin = cocos2d::Director::getInstance()->getVisibleOrigin();
-        player = std::make_shared<PlayerGun>(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y,
-                                             PLAYERPHYSMASS, PLAYERPHYSRADIUS, PLAYERROTATIONRATE, this);
+        player = std::make_shared<PlayerGun>(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, this);
     }
     
     void GunBounceLayer::createStar() {

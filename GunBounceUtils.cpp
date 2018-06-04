@@ -11,17 +11,20 @@ namespace gunbounce {
 
     const float PLAYERPHYSRADIUS = 60.0f;
     const float PLAYERPHYSMASS = 0.1f;
-    const float PLAYERPHYSSHOOTFORCE = 5000.0f;
-    const float PLAYERROTATIONRATE = 360.0f;
-    const float PLAYERVELOCITYLIMIT = 1200.0f;
+    const float PLAYERPHYSSHOOTFORCE = 6000.0f;
+    const float PLAYERROTATIONRATE = 450.0f;
+    const float PLAYERVELOCITYLIMIT = 800.0f;
     const float STARPHYSRADIUS = 75.0f;
-    const float SHOTPHYSRADIUS = 30.0f;
-    const float SHOTLIFETIME = 3.0f;
+    const float STARPHYSMASS = 0.000001f;
+    const float SHOTPHYSRADIUS = 20.0f;
+    const float SHOTPHYSMASS = 0.1f;
+    const float SHOTVELOCITYLIMIT = 700.0f;
     const float INCREASE_MAX_SHOTS_INTERVAL = 10.0f;
 
     const int COLL_PLAYER = 0x01;
     const int COLL_SHOT = 0x02;
     const int COLL_STAR = 0x04;
+    const int COLL_LEVEL = 0x08;
     const int START_MAX_SHOTS = 2;
     const int LEVEL_SCORE_THRESHOLD = 500;
     const int GAMELAYER_TAG = 1000;

@@ -1,4 +1,6 @@
 #include "MenuLayer.h"
+#include "GunBounceUtils.h"
+#include "SimpleAudioEngine.h"
 
 namespace gunbounce {
     static void problemLoading(const char* filename) {
@@ -13,7 +15,9 @@ namespace gunbounce {
         auto origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 
         auto pauseLabel = cocos2d::Label::createWithTTF("PAUSED", "fonts/Marker Felt.ttf", 72);
-        if (pauseLabel == nullptr)
+        auto creditLabel = cocos2d::Label::createWithTTF("BGM:\"Tech Live\" Kevin MacLeod (incompetech.com) - \
+Licensed under Creative Commons: By Attribution 3.0 License: http://creativecommons.org/licenses/by/3.0/", "fonts/Marker Felt.ttf", 24);
+        if (pauseLabel == nullptr || creditLabel == nullptr)
         {
             problemLoading("'fonts/Marker Felt.ttf'");
         }
@@ -22,6 +26,10 @@ namespace gunbounce {
             pauseLabel->setPosition(cocos2d::Vec2(origin.x + visibleSize.width/2,
                                     origin.y + visibleSize.height / 2 + pauseLabel->getContentSize().height + 100.0f));
             this->addChild(pauseLabel, 1);
+            
+            creditLabel->setAnchorPoint(cocos2d::Vec2(0.0f, 0.0f));
+            creditLabel->setPosition(cocos2d::Vec2(origin.x, origin.y));
+            this->addChild(creditLabel, 1);
         }
 
         auto resumeItem = cocos2d::MenuItemImage::create(
@@ -87,6 +95,9 @@ namespace gunbounce {
     }
     
     void MenuLayer::returnToGameCallback(cocos2d::Ref* pSender) {
+        auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+        audio->resumeBackgroundMusic();
+        
         auto gameLayer = this->getScene()->getChildByTag(GAMELAYER_TAG);
         gameLayer->resume();
         for(const auto &child : gameLayer->getChildren())

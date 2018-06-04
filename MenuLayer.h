@@ -2,7 +2,6 @@
 #define __MENU_LAYER_H__
 
 #include "cocos2d.h"
-#include "GunBounceUtils.h"
 
 namespace gunbounce {
     class MenuLayer : public cocos2d::Layer

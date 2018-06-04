@@ -2,33 +2,25 @@
 #include "AppDelegate.h"
 #include "GameScene.h"
 #include "GunBounceUtils.h"
-
-//#elif USE_SIMPLE_AUDIO_ENGINE
-//#include "audio/include/SimpleAudioEngine.h"
-//using namespace CocosDenshion;
-//#endif
+#include "SimpleAudioEngine.h"
 
 namespace gunbounce {
 
-/*
+
     AppDelegate::AppDelegate()
     {
     }
 
     AppDelegate::~AppDelegate() 
     {
-    #elif USE_SIMPLE_AUDIO_ENGINE
-        SimpleAudioEngine::end();
-    #endif
+        CocosDenshion::SimpleAudioEngine::end();
     }
-*/
 
     void AppDelegate::initGLContextAttrs()
     {
         GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8, 0};
         cocos2d::GLView::setGLContextAttrs(glContextAttrs);
     }
-
 
     static int register_all_packages()
     {
@@ -48,7 +40,6 @@ namespace gunbounce {
             director->setOpenGLView(glview);
         }
 
-        director->setDisplayStats(true);
         director->setAnimationInterval(1.0f / 60);
         glview->setDesignResolutionSize(DESIGN_RESOLUTION_SIZE.width, DESIGN_RESOLUTION_SIZE.height, ResolutionPolicy::NO_BORDER);
         
@@ -75,18 +66,13 @@ namespace gunbounce {
 
     void AppDelegate::applicationDidEnterBackground() {
         cocos2d::Director::getInstance()->stopAnimation();
-//    #elif USE_SIMPLE_AUDIO_ENGINE
-//        SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-//        SimpleAudioEngine::getInstance()->pauseAllEffects();
-//    #endif
+        CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+        CocosDenshion::SimpleAudioEngine::getInstance()->pauseAllEffects();
     }
 
     void AppDelegate::applicationWillEnterForeground() {
         cocos2d::Director::getInstance()->startAnimation();
-
-//    #elif USE_SIMPLE_AUDIO_ENGINE
-//        SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-//        SimpleAudioEngine::getInstance()->resumeAllEffects();
-//    #endif
+        CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+        CocosDenshion::SimpleAudioEngine::getInstance()->resumeAllEffects();
     }
 }

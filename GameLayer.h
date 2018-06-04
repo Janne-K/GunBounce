@@ -11,28 +11,19 @@ namespace gunbounce {
     class GunBounceLayer : public cocos2d::Layer
     {
     public:
-        //static cocos2d::Scene* createScene();
-
         virtual bool init();
-        virtual void update(float delta);
-
-        // implement the "static create()" method manually
         CREATE_FUNC(GunBounceLayer);
-        
-        void addShotToList(std::shared_ptr<ShotProjectile> shotToAdd);
     private:
         std::shared_ptr<PlayerGun> player;
         std::shared_ptr<CollectibleStar> star;
         std::queue<std::shared_ptr<ShotProjectile>> shots;
-        //cocos2d::EventListenerMouse* mouseListener;
-        //cocos2d::EventListenerTouchOneByOne* touchListener;
         cocos2d::Label* scoreLabel;
         cocos2d::Label* levelLabel;
+        void addShotToList(std::shared_ptr<ShotProjectile> shotToAdd);
         void stageSetup();
         void updateLabels();
         void spawnPauseMenu();
         void pauseNodes();
-        void resumeNodes();
         void handlePlayerDeath();
         void handleCollectStar();
         void randomizeStarPosition();
@@ -46,7 +37,5 @@ namespace gunbounce {
         int maxShotsOnScreen;
         float maxShotsIncreaseTimer;
     };
-    
-    //cocos2d::Scene* createScene();
 }
 #endif // __GAME_LAYER_H__

@@ -16,13 +16,16 @@ namespace gunbounce {
     extern const float PLAYERROTATIONRATE;
     extern const float PLAYERVELOCITYLIMIT;
     extern const float STARPHYSRADIUS;
+    extern const float STARPHYSMASS;
     extern const float SHOTPHYSRADIUS;
-    extern const float SHOTLIFETIME;
+    extern const float SHOTPHYSMASS;
+    extern const float SHOTVELOCITYLIMIT;
     extern const float INCREASE_MAX_SHOTS_INTERVAL;
     
     extern const int COLL_PLAYER;
     extern const int COLL_SHOT;
     extern const int COLL_STAR;
+    extern const int COLL_LEVEL;
     extern const int START_MAX_SHOTS;
     extern const int LEVEL_SCORE_THRESHOLD;
     extern const int GAMELAYER_TAG;

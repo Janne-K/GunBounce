@@ -3,37 +3,29 @@
 #include "GunBounceUtils.h"
 
 namespace gunbounce {
-    PlayerGun::PlayerGun(const float x, const float y, const float pmass, const float pradius, const float rrate, cocos2d::Layer* parentLayer)
-            : PHYSMASS(pmass), PHYSRADIUS(pradius), ROTATIONRATE(rrate) {
+    PlayerGun::PlayerGun(const float x, const float y, cocos2d::Layer* parentLayer) {
         this->gunSprite = cocos2d::Sprite::create("playergun.png");
-        parentLayer->addChild(this->gunSprite, 0);
+        parentLayer->addChild(this->gunSprite);
         this->gunSprite->setPosition(x, y);
         this->gunSprite->setTag(COLL_PLAYER);
         
-        auto gunPhysBody = cocos2d::PhysicsBody::createCircle(PHYSRADIUS,
+        auto gunPhysBody = cocos2d::PhysicsBody::createCircle(PLAYERPHYSRADIUS,
                                 cocos2d::PhysicsMaterial(1.0f, 1.0f, 0.0f));
-        gunPhysBody->setMass(PHYSMASS);
+        gunPhysBody->setMass(PLAYERPHYSMASS);
         gunPhysBody->setCategoryBitmask(COLL_PLAYER);
         gunPhysBody->setCollisionBitmask(COLL_SHOT | COLL_STAR);
         gunPhysBody->setContactTestBitmask(0xFFFFFFFF);
         gunPhysBody->setVelocityLimit(PLAYERVELOCITYLIMIT);
-        
-        auto mass = gunPhysBody->getMass();
-        cocos2d::log("Mass: %f", mass);
         this->gunSprite->addComponent(gunPhysBody);
         
-        auto rotateBy = cocos2d::RotateBy::create(1, ROTATIONRATE);
+        this->gunSprite->setRotation(-90.0f); // Make the gun point up at start
+        auto rotateBy = cocos2d::RotateBy::create(1, PLAYERROTATIONRATE);
         auto infiniteRotation = cocos2d::RepeatForever::create(rotateBy);
         this->gunSprite->runAction(infiniteRotation);
-        
-        auto category = gunPhysBody->getCategoryBitmask();
-        auto collision =  gunPhysBody->getCollisionBitmask();
-        cocos2d::log("Category %d, Collision %d", category, collision);
     }
     
     bool PlayerGun::canShoot() {
         // Check if we can shoot right now
-        
         return true;
     }
 

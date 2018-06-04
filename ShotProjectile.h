@@ -6,15 +6,10 @@
 namespace gunbounce {
     class ShotProjectile {
     public:
-        ShotProjectile(const float x, const float y, const float angle, const float mass, const float force, const float ltime, cocos2d::Layer* const parentLayer);
-        float getLifeTime();
-        void decreaseLifeTime(float amount);
+        ShotProjectile(const float x, const float y, const float angle, const float force, cocos2d::Layer* const parentLayer);
         cocos2d::Sprite* getSprite();
     private:
         cocos2d::Sprite* shotSprite;
-        const float PHYSRADIUS;
-        const float PHYSMASS;
-        float lifetime;
     };
 }
 
