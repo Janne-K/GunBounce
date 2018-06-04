@@ -6,7 +6,7 @@
 namespace gunbounce {
     class PlayerGun {
     public:
-        PlayerGun(const float x, const float y, const float pmass, const float pradius, const float rrate, cocos2d::Scene* scene);
+        PlayerGun(const float x, const float y, const float pmass, const float pradius, const float rrate, cocos2d::Layer* parentLayer);
         bool canShoot();
         cocos2d::Sprite* getSprite();
     private:

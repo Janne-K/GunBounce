@@ -25,6 +25,8 @@ namespace gunbounce {
     extern const int COLL_STAR;
     extern const int START_MAX_SHOTS;
     extern const int LEVEL_SCORE_THRESHOLD;
+    extern const int GAMELAYER_TAG;
+    extern const int MENU_TAG;
 
     cocos2d::Vec2 calculateNormalVecFromAngle(const float angle);
 }

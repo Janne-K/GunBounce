@@ -24,6 +24,8 @@ namespace gunbounce {
     const int COLL_STAR = 0x04;
     const int START_MAX_SHOTS = 2;
     const int LEVEL_SCORE_THRESHOLD = 500;
+    const int GAMELAYER_TAG = 1000;
+    const int MENU_TAG = 1001;
     
     cocos2d::Vec2 calculateNormalVecFromAngle(const float angle) {
         float radAngle = angle / 180.0f * M_PI;

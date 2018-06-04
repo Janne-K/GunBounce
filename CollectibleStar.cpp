@@ -1,9 +1,9 @@
 #include "CollectibleStar.h"
 
 namespace gunbounce {
-    CollectibleStar::CollectibleStar(const float x, const float y, cocos2d::Scene* scene) {
+    CollectibleStar::CollectibleStar(const float x, const float y, cocos2d::Layer* parentLayer) {
         this->starSprite = cocos2d::Sprite::create("collectiblestar.png");
-        scene->addChild(this->starSprite, 0);
+        parentLayer->addChild(this->starSprite, 0);
         this->starSprite->setPosition(x, y);
         this->starSprite->setTag(COLL_STAR);
         

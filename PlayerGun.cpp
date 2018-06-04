@@ -3,10 +3,10 @@
 #include "GunBounceUtils.h"
 
 namespace gunbounce {
-    PlayerGun::PlayerGun(const float x, const float y, const float pmass, const float pradius, const float rrate, cocos2d::Scene* scene)
+    PlayerGun::PlayerGun(const float x, const float y, const float pmass, const float pradius, const float rrate, cocos2d::Layer* parentLayer)
             : PHYSMASS(pmass), PHYSRADIUS(pradius), ROTATIONRATE(rrate) {
         this->gunSprite = cocos2d::Sprite::create("playergun.png");
-        scene->addChild(this->gunSprite, 0);
+        parentLayer->addChild(this->gunSprite, 0);
         this->gunSprite->setPosition(x, y);
         this->gunSprite->setTag(COLL_PLAYER);
         

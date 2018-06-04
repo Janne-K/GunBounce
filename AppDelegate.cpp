@@ -67,7 +67,7 @@ namespace gunbounce {
         register_all_packages();
         std::srand(std::time(NULL));
         
-        auto scene = GunBounce::createScene();
+        auto scene = GunBounceScene::createScene();
         director->runWithScene(scene);
         
         return true;

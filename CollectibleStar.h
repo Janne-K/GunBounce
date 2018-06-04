@@ -7,7 +7,7 @@
 namespace gunbounce {
     class CollectibleStar {
     public:
-        CollectibleStar(const float x, const float y, cocos2d::Scene* scene);
+        CollectibleStar(const float x, const float y, cocos2d::Layer* parentLayer);
         void setNewPosition(const float x, const float y);
         cocos2d::Sprite* getSprite();
     private:
