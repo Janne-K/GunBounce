@@ -37,35 +37,14 @@ namespace gunbounce {
         physWorld->setGravity(cocos2d::Vec2::ZERO);
 
         auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-        cocos2d::Vec2 origin = cocos2d::Director::getInstance()->getVisibleOrigin();
+        auto origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 
         /////////////////////////////
         // 2. add a menu item with "X" image, which is clicked to quit the program
         //    you may modify it.
 
         // add a "close" icon to exit the progress. it's an autorelease object
-        auto closeItem = cocos2d::MenuItemImage::create(
-                                               "CloseNormal.png",
-                                               "CloseSelected.png",
-                                               CC_CALLBACK_1(GunBounce::menuCloseCallback, this));
 
-        if (closeItem == nullptr ||
-            closeItem->getContentSize().width <= 0 ||
-            closeItem->getContentSize().height <= 0)
-        {
-            problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-        }
-        else
-        {
-            float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-            float y = origin.y + closeItem->getContentSize().height/2;
-            closeItem->setPosition(cocos2d::Vec2(x,y));
-        }
-
-        // create menu, it's an autorelease object
-        auto menu = cocos2d::Menu::create(closeItem, NULL);
-        menu->setPosition(cocos2d::Vec2::ZERO);
-        this->addChild(menu, 1);
 
         /////////////////////////////
         // 3. add your codes below...
@@ -146,8 +125,17 @@ namespace gunbounce {
             return true;
         };
         _eventDispatcher->addEventListenerWithSceneGraphPriority(shotHitListener, this);
+        
+        // android back press event
+        auto backButtonListener = cocos2d::EventListenerKeyboard::create();
+        backButtonListener->onKeyReleased = [this](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
+        {
+            if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_BACK)
+                this->spawnPauseMenu();
+        };
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(backButtonListener, this);
 
-        touchListener = cocos2d::EventListenerTouchOneByOne::create();
+        auto touchListener = cocos2d::EventListenerTouchOneByOne::create();
         touchListener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event){
             if (this->player == nullptr)
                 this->stageSetup();
@@ -155,7 +143,8 @@ namespace gunbounce {
                 this->playerShoot();
             return true;
         };
-        _eventDispatcher->addEventListenerWithFixedPriority(this->touchListener, 1);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+        
         
         this->scheduleUpdate();
 
@@ -239,6 +228,36 @@ namespace gunbounce {
             auto scoreStr = "Score: " + std::to_string(this->score);
             this->scoreLabel->setString(scoreStr);
         }
+    }
+    
+    void GunBounce::spawnPauseMenu() {
+        cocos2d::log("Test");
+        auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+        auto origin = cocos2d::Director::getInstance()->getVisibleOrigin();        
+        
+        auto closeItem = cocos2d::MenuItemImage::create(
+                                               "CloseNormal.png",
+                                               "CloseSelected.png",
+                                               CC_CALLBACK_1(GunBounce::menuCloseCallback, this));
+
+        if (closeItem == nullptr ||
+            closeItem->getContentSize().width <= 0 ||
+            closeItem->getContentSize().height <= 0)
+        {
+            problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
+        }
+        else
+        {
+            float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
+            float y = origin.y + closeItem->getContentSize().height/2;
+            closeItem->setPosition(cocos2d::Vec2(x,y));
+        }
+
+        // create menu, it's an autorelease object
+        auto menu = cocos2d::Menu::create(closeItem, NULL);
+        menu->setPosition(cocos2d::Vec2::ZERO);
+        this->addChild(menu, 1);
+        cocos2d::Director::getInstance()->getRunningScene()->getPhysicsWorld()->setSpeed(0);
     }
     
     void GunBounce::handlePlayerDeath() {

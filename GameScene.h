@@ -27,12 +27,13 @@ namespace gunbounce {
         std::shared_ptr<PlayerGun> player;
         std::shared_ptr<CollectibleStar> star;
         std::queue<std::shared_ptr<ShotProjectile>> shots;
-        cocos2d::EventListenerMouse* mouseListener;
-        cocos2d::EventListenerTouchOneByOne* touchListener;
+        //cocos2d::EventListenerMouse* mouseListener;
+        //cocos2d::EventListenerTouchOneByOne* touchListener;
         cocos2d::Label* scoreLabel;
         cocos2d::Label* levelLabel;
         void stageSetup();
         void updateLabels();
+        void spawnPauseMenu();
         void handlePlayerDeath();
         void handleCollectStar();
         void randomizeStarPosition();
