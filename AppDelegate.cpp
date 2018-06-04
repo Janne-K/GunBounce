@@ -1,12 +1,9 @@
-#include <cstdlib>
 #include "AppDelegate.h"
 #include "GameScene.h"
 #include "GunBounceUtils.h"
 #include "SimpleAudioEngine.h"
 
 namespace gunbounce {
-
-
     AppDelegate::AppDelegate()
     {
     }

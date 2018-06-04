@@ -4,7 +4,6 @@
 #include "cocos2d.h"
 
 namespace gunbounce {
-
     extern const cocos2d::Size DESIGN_RESOLUTION_SIZE;
     extern const cocos2d::Size SMALL_RESOLUTION_SIZE;
     extern const cocos2d::Size MEDIUM_RESOLUTION_SIZE;
@@ -20,7 +19,7 @@ namespace gunbounce {
     extern const float SHOTPHYSRADIUS;
     extern const float SHOTPHYSMASS;
     extern const float SHOTVELOCITYLIMIT;
-    extern const float INCREASE_MAX_SHOTS_INTERVAL;
+    extern const float SCOREPOINTINTERVAL;
     
     extern const int COLL_PLAYER;
     extern const int COLL_SHOT;

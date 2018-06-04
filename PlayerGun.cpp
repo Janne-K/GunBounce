@@ -25,7 +25,7 @@ namespace gunbounce {
     }
     
     bool PlayerGun::canShoot() {
-        // Check if we can shoot right now
+        //TODO: consider a gameplay mechanic for this
         return true;
     }
 

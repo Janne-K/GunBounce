@@ -2,7 +2,6 @@
 #define _COLLECTIBLE_STAR_H_
 
 #include "cocos2d.h"
-#include "GunBounceUtils.h"
 
 namespace gunbounce {
     class CollectibleStar {

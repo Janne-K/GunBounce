@@ -4,7 +4,6 @@
 #include "cocos2d.h"
 
 namespace gunbounce {
-
     class AppDelegate : private cocos2d::Application {
     public:
         AppDelegate();
@@ -17,32 +16,3 @@ namespace gunbounce {
 }
    
 #endif // _APP_DELEGATE_H_
-
-
-//class  AppDelegate : private cocos2d::Application
-//{
-//public:
-    //AppDelegate();
-    //virtual ~AppDelegate();
-
-    //virtual void initGLContextAttrs();
-
-    ///**
-    //@brief    Implement Director and Scene init code here.
-    //@return true    Initialize success, app continue.
-    //@return false   Initialize failed, app terminate.
-    //*/
-    //virtual bool applicationDidFinishLaunching();
-
-    ///**
-    //@brief  Called when the application moves to the background
-    //@param  the pointer of the application
-    //*/
-    //virtual void applicationDidEnterBackground();
-
-    ///**
-    //@brief  Called when the application reenters the foreground
-    //@param  the pointer of the application
-    //*/
-    //virtual void applicationWillEnterForeground();
-//};

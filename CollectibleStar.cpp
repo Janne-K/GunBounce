@@ -1,4 +1,5 @@
 #include "CollectibleStar.h"
+#include "GunBounceUtils.h"
 
 namespace gunbounce {
     CollectibleStar::CollectibleStar(const float x, const float y, cocos2d::Layer* parentLayer) {

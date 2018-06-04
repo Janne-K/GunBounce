@@ -4,7 +4,6 @@
 #include "cocos2d.h"
 #include "PlayerGun.h"
 #include "ShotProjectile.h"
-#include "GunBounceUtils.h"
 #include "CollectibleStar.h"
 
 namespace gunbounce {
@@ -13,6 +12,7 @@ namespace gunbounce {
     public:
         virtual bool init();
         CREATE_FUNC(GunBounceLayer);
+        virtual void update(float dt) override;
     private:
         std::shared_ptr<PlayerGun> player;
         std::shared_ptr<CollectibleStar> star;
@@ -26,6 +26,7 @@ namespace gunbounce {
         void pauseNodes();
         void handlePlayerDeath();
         void handleCollectStar();
+        void addScore(int scoreToAdd);
         void randomizeStarPosition();
         void playerShoot();
         void checkMaxShots();
@@ -35,7 +36,7 @@ namespace gunbounce {
         int score;
         int level;
         int maxShotsOnScreen;
-        float maxShotsIncreaseTimer;
+        float scoreTimer;
     };
 }
 #endif // __GAME_LAYER_H__
